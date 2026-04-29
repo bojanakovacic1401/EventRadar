@@ -6,14 +6,14 @@ USE beoLife;
 
 CREATE TABLE IF NOT EXISTS events (
 	id INT AUTO_INCREMENT PRIMARY KEY,
-	title VARCHAR(255) NOT NULL,
-	description TEXT,
+	event_title VARCHAR(255) NOT NULL,
+	event_description TEXT,
 	category VARCHAR(100) NOT NULL,
-	date DATETIME NOT NULL,
-	location VARCHAR(255),
-	price DECIMAL(10, 2),
-	image_url TEXT,
-	link TEXT
+	event_date DATETIME NOT NULL,
+	event_location VARCHAR(255),
+	event_price DECIMAL(10, 2),
+	event_image_url TEXT,
+	event_link TEXT
 );
 
 CREATE TABLE IF NOT EXISTS users (
@@ -25,15 +25,17 @@ CREATE TABLE IF NOT EXISTS users (
 	avatar_url VARCHAR(255) NULL,
 
 	CHECK (CHAR_LENGTH(TRIM(username)) BETWEEN 3 AND 40),
-	CHECK (CHSAR_LENGTH(TRIM(email)) >0)
+	CHECK (CHAR_LENGTH(TRIM(email)) >0)
 );
 
 CREATE TABLE IF NOT EXISTS saved_events(
 	id INT AUTO_INCREMENT PRIMARY KEY,
-	user_id INT NOT NULL UNIQUE,
-	event_id INT NOT NULL UNIQUE,
+	user_id INT NOT NULL,
+	event_id INT NOT NULL,
 
 	FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-	FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE
+	FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE,
+
+	UNIQUE(user_id, event_id)
 );
 
