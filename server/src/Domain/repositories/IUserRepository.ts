@@ -5,7 +5,7 @@ export type CreateUserInput = {
 	lastname: string;
 	username: string;
 	email: string;
-	avatar_url: string | null;
+	avatar_url?: string | null;
 	password_hash: string;
 };
 
