@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS events (
 	event_date DATETIME NOT NULL,
 	event_location VARCHAR(255),
 	event_price DECIMAL(10, 2),
-	event_image_url TEXT,
+	event_image_url VARCHAR(255) NULL,
 	event_link TEXT
 );
 
@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS users (
 	username VARCHAR(40) NOT NULL UNIQUE,
 	email VARCHAR(120) NOT NULL UNIQUE,
 	avatar_url VARCHAR(255) NULL,
+	password_hash VARCHAR(255) NOT NULL,
 
 	CHECK (CHAR_LENGTH(TRIM(username)) BETWEEN 3 AND 40),
 	CHECK (CHAR_LENGTH(TRIM(email)) >0)
