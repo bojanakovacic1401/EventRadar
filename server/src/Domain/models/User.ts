@@ -5,7 +5,7 @@ export class User {
 		public lastname: string = "",
 		public username: string = "",
 		public email: string = "",
-		public avatar_url: string | null = null,
+		public avatar_url: string | null=null,
 		public password_hash: string = ""
     ) { }
 }

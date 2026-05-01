@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS events (
 	id INT AUTO_INCREMENT PRIMARY KEY,
 	event_title VARCHAR(255) NOT NULL,
 	event_description TEXT,
-	category VARCHAR(100) NOT NULL,
+	event_category VARCHAR(100) NOT NULL,
 	event_date DATETIME NOT NULL,
 	event_location VARCHAR(255),
 	event_price DECIMAL(10, 2),

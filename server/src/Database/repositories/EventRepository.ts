@@ -27,13 +27,13 @@ export class EventRepository implements IEventRepository {
     public async findAll(): Promise<Event[]> {
         const [rows]: any = await this.db.query(
             `
-            SELECT event_id, event_title, event_description, event_category, event_date, event_location, event_price, event_image_url, event_link
+            SELECT id, event_title, event_description, event_category, event_date, event_location, event_price, event_image_url, event_link
             FROM events
             `,
             []
         );
         return rows.map(
-            (row: any) => new Event(row.event_id,
+            (row: any) => new Event(row.id,
                 row.event_title,
                 row.event_description,
                 row.event_category,
@@ -48,42 +48,80 @@ export class EventRepository implements IEventRepository {
     public async findById(eventId: number): Promise<Event | null> {
         const [rows]: any = await this.db.query(
             `
-            SELECT id
-            FROM events
-            WHERE id = ?
-            `,
+        SELECT id, event_title, event_description, event_category, event_date, event_location, event_price, event_image_url, event_link
+        FROM events
+        WHERE id = ?
+        LIMIT 1
+        `,
             [eventId]
         );
-        return rows.map(
-            (row: any) => new Event(row.id, row.eventId)
+
+        if (rows.length === 0) {
+            return null;
+        }
+
+        const row = rows[0];
+
+        return new Event(
+            row.id,
+            row.event_title,
+            row.event_description,
+            row.event_category,
+            row.event_date,
+            row.event_location,
+            row.event_price,
+            row.event_image_url,
+            row.event_link
         );
     }
 
     public async findByCategory(eventCategory: string): Promise<Event[]> {
         const [rows]: any = await this.db.query(
             `
-            SELECT event_category
-            FROM events
-            WHERE event_category = ?
-            `,
+        SELECT id, event_title, event_description, event_category, event_date, event_location, event_price, event_image_url, event_link
+        FROM events
+        WHERE event_category = ?
+        `,
             [eventCategory]
         );
+
         return rows.map(
-            (row: any) => new Event(row.id, row.eventCategory)
+            (row: any) => new Event(
+                row.id,
+                row.event_title,
+                row.event_description,
+                row.event_category,
+                row.event_date,
+                row.event_location,
+                row.event_price,
+                row.event_image_url,
+                row.event_link
+            )
         );
     }
 
-    public async findByLocation(eventLocation: string): Promise<Event[]> {
+    public async findByLocation(eventCategory: string): Promise<Event[]> {
         const [rows]: any = await this.db.query(
             `
-            SELECT event_location
-            FROM events
-            WHERE event_location = ?
-            `,
-            [eventLocation]
+        SELECT id, event_title, event_description, event_category, event_date, event_location, event_price, event_image_url, event_link
+        FROM events
+        WHERE event_location = ?
+        `,
+            [eventCategory]
         );
+
         return rows.map(
-            (row: any) => new Event(row.id, row.eventLocation)
+            (row: any) => new Event(
+                row.id,
+                row.event_title,
+                row.event_description,
+                row.event_category,
+                row.event_date,
+                row.event_location,
+                row.event_price,
+                row.event_image_url,
+                row.event_link
+            )
         );
     }
 
@@ -107,7 +145,7 @@ export class EventRepository implements IEventRepository {
             `,
             [eventId]
         );
-        return rows.Length > 0;
+        return rows.length > 0;
     }
     
 }
