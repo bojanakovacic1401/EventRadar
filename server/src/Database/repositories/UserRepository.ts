@@ -25,9 +25,9 @@ export class UserRepository implements IUserRepository {
     }
 
     /**findByEmail(email: string): Promise<User | null>;
-	findByUsername(username: string): Promise<User | null>;
-	delete(userId: number): Promise<void>;
-	exists(email: string, username: string): Promise<boolean>;
+    findByUsername(username: string): Promise<User | null>;
+    delete(userId: number): Promise<void>;
+    exists(email: string, username: string): Promise<boolean>;
      */
 
     public async findById(userId: number): Promise<User | null> {
@@ -36,6 +36,31 @@ export class UserRepository implements IUserRepository {
             WHERE id = ?
             `,
             [userId]
+        );
+
+        if (rows.length == 0) { //zbog Promise<User | null>
+            return null;
+        }
+
+        const row = rows[0];
+        return new User(
+            row.id,
+            row.name,
+            row.lastname,
+            row.username,
+            row.email,
+            row.avatar_url,
+            row.password_hash
+        );
+    }
+
+    public async findByUsername(username: string): Promise<User | null> {
+        const [rows]: any = await this.db.query(
+            `
+            SELECT id, name, lastname, username, email, avatar_url, password_hash FROM users
+            WHERE username = ?
+            `,
+            [username]
         );
 
         if (rows.length == 0) { //zbog Promise<User | null>
