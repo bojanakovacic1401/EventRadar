@@ -22,7 +22,7 @@ export class UserService {
 		if (!userId) {
 			throw new Error("ID is required.");
 		}
-		const alreadyExsists = await this.UserRepository.exists(user.userId);
+		const alreadyExsists = await this.UserRepository.exists(userId);
 		if (!alreadyExsists) {
 			throw new Error("This user does not exists.");
 		}

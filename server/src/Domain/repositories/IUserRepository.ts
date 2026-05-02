@@ -10,7 +10,6 @@ export type CreateUserInput = {
 	password_hash: string;
 };
 
-/*userId: number ne mora u create jer je auto_increment znaci sam se stvara */
 
 export interface IUserRepository {
 	create(user: CreateUserInput): Promise<User>;
@@ -19,4 +18,5 @@ export interface IUserRepository {
 	findByUsername(username: string): Promise<User | null>;
 	delete(userId: number): Promise<void>;
 	exists(userId: number): Promise<boolean>;
+	existsByEmailOrUsername(email: string, username: string): Promise<boolean>;
 }

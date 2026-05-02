@@ -103,21 +103,21 @@ export class UserRepository implements IUserRepository {
         await this.db.query(
             `
             DELETE FROM users
-            WHERE userId = ?
+            WHERE id = ?
             `,
-            [userId]
+            [id]
         );
     }
 
-    public async exists(userId: number, email: string, username: string) {
+    public async exists(id: number, email: string, username: string) {
         const [rows]: any = await this.db.query(
             `
-            SELECT userId, email, username
+            SELECT id, email, username
             FROM users
-            WHERE userId = ? AND email = ? AND username = ?
+            WHERE id = ? AND email = ? AND username = ?
             LIMIT 1
             `,
-            [userId, email, username]
+            [id, email, username]
         );
         return rows.length > 0;
     }
