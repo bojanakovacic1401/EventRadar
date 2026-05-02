@@ -1,6 +1,7 @@
 import { Pool } from "mysql2/promise";
 import { Event } from "../../Domain/models/Event";
 import { CreateEvent, IEventRepository } from "../../Domain/repositories/IEventRepository";
+import { EventCategories } from "../../Domain/enums/EventCategories";
 
 export class EventRepository implements IEventRepository {
     public constructor(private db: Pool) { }
@@ -75,7 +76,7 @@ export class EventRepository implements IEventRepository {
         );
     }
 
-    public async findByCategory(eventCategory: string): Promise<Event[]> {
+    public async findByCategory(eventCategory: EventCategories): Promise<Event[]> {
         const [rows]: any = await this.db.query(
             `
         SELECT id, event_title, event_description, event_category, event_date, event_location, event_price, event_image_url, event_link
@@ -100,14 +101,14 @@ export class EventRepository implements IEventRepository {
         );
     }
 
-    public async findByLocation(eventCategory: string): Promise<Event[]> {
+    public async findByLocation(eventLocation: string): Promise<Event[]> {
         const [rows]: any = await this.db.query(
             `
         SELECT id, event_title, event_description, event_category, event_date, event_location, event_price, event_image_url, event_link
         FROM events
         WHERE event_location = ?
         `,
-            [eventCategory]
+            [eventLocation]
         );
 
         return rows.map(

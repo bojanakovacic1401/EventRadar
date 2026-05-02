@@ -51,6 +51,6 @@ export class SavedEventsRepository implements ISavedEventsRepository {
             `,
             [userId, eventId]
         );
-        return rows.Length > 0;
+        return rows.length > 0;
     }
 }

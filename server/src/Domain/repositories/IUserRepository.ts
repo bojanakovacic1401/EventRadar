@@ -1,6 +1,7 @@
 import { User } from "../models/User";
 
 export type CreateUserInput = {
+	userId: number;
 	name: string;
 	lastname: string;
 	username: string;
@@ -17,5 +18,5 @@ export interface IUserRepository {
 	findByEmail(email: string): Promise<User | null>;
 	findByUsername(username: string): Promise<User | null>;
 	delete(userId: number): Promise<void>;
-	exists(email: string, username: string): Promise<boolean>;
+	exists(userId: number): Promise<boolean>;
 }
