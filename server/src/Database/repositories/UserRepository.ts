@@ -24,12 +24,12 @@ export class UserRepository implements IUserRepository {
         );
     }
 
-    public async findById(userId: number): Promise<User | null> {
+    public async findById(id: number): Promise<User | null> {
         const [rows]: any = await this.db.query(
             `SELECT id, name, lastname, username, email, avatar_url, password_hash FROM users
             WHERE id = ?
             `,
-            [userId]
+            [id]
         );
 
         if (rows.length == 0) {
@@ -99,7 +99,7 @@ export class UserRepository implements IUserRepository {
     }
 
 
-    public async delete(userId: number): Promise<void> {
+    public async delete(id: number): Promise<void> {
         await this.db.query(
             `
             DELETE FROM users
@@ -109,16 +109,30 @@ export class UserRepository implements IUserRepository {
         );
     }
 
-    public async exists(id: number, email: string, username: string) {
+    public async exists(id: number): Promise<boolean> {
         const [rows]: any = await this.db.query(
             `
-            SELECT id, email, username
+            SELECT id
             FROM users
-            WHERE id = ? AND email = ? AND username = ?
+            WHERE id = ?
             LIMIT 1
             `,
-            [id, email, username]
+            [id]
         );
         return rows.length > 0;
     }
+
+    public async existsByEmailOrUsername(email: string, username: string): Promise<boolean> {
+        const [rows]: any = await this.db.query(
+            `
+            SELECT email, username
+            FROM users
+            WHERE email = ? AND username = ?
+            LIMIT 1
+            `,
+            [email, username]
+        );
+        return rows.length > 0;
+    }
+
 }

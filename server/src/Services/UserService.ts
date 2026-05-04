@@ -10,7 +10,7 @@ export class UserService {
 			throw new Error("Email, name, lastname and username are required!")
 		}
 
-		const alreadyExsists = await this.UserRepository.exists(user.userId);
+		const alreadyExsists = await this.UserRepository.exists(user.id);
 		if (alreadyExsists) {
 			throw new Error("This user already exists.");
 		}
@@ -18,16 +18,16 @@ export class UserService {
 		return this.UserRepository.create(user);
 	}
 
-	public async getUserById(userId: number): Promise<User | null> {
-		if (!userId) {
+	public async getUserById(id: number): Promise<User | null> {
+		if (!id) {
 			throw new Error("ID is required.");
 		}
-		const alreadyExsists = await this.UserRepository.exists(userId);
+		const alreadyExsists = await this.UserRepository.exists(id);
 		if (!alreadyExsists) {
 			throw new Error("This user does not exists.");
 		}
 
-		return this.UserRepository.findById(userId);
+		return this.UserRepository.findById(id);
 	}
 
 	public async getUserByEmail(email: string): Promise<User | null> {
@@ -46,16 +46,16 @@ export class UserService {
 		return this.UserRepository.findByUsername(username);
 	}
 
-	public async removeUser(userId: number): Promise<void> {
-		if (!userId) {
+	public async removeUser(id: number): Promise<void> {
+		if (!id) {
 			throw new Error("ID is required!");
 		}
 
-		const alreadyExsists = await this.UserRepository.exists(userId);
+		const alreadyExsists = await this.UserRepository.exists(id);
 		if (!alreadyExsists) {
 			throw new Error("This user is already deleted.");
 		}
 
-		return this.UserRepository.delete(userId);
+		return this.UserRepository.delete(id);
 	}
 }

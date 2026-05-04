@@ -1,39 +1,51 @@
-import { ISavedEventsRepository } from "../Domain/repositories/ISavedEventsRepository";
+import { ISavedEventsRepository, CreateSavedEvent } from "../Domain/repositories/ISavedEventsRepository";
 import { SavedEvents } from "../Domain/models/SavedEvents";
 
 export class SavedEventsService {
-    public constructor(private SavedEventsRepository: ISavedEventsRepository) { }
+    public constructor(private savedEventsRepository: ISavedEventsRepository) { }
 
-    public async saveEvent(userId: number, eventId: number): Promise<SavedEvents> {
-        if (!userId || !eventId) {
-            throw new Error("User ID and event ID are required!");
+    public async saveEvent(event: CreateSavedEvent): Promise<SavedEvents> {
+        if (!event.user_id || !event.event_external_id || !event.event_title) {
+            throw new Error("Missing required fields.");
         }
 
-        const alreadySaved = await this.SavedEventsRepository.exists(userId, eventId);
-        if (alreadySaved) {
-            throw new Error("Event is already saved!");
+        const alreadyExists = await this.savedEventsRepository.exists(
+            event.user_id,
+            event.event_external_id
+        );
+
+        if (alreadyExists) {
+            throw new Error("Event already saved.");
         }
-        return this.SavedEventsRepository.create(userId, eventId);
+
+        return this.savedEventsRepository.create(event);
     }
 
     public async getSavedEventsByUser(userId: number): Promise<SavedEvents[]> {
         if (!userId) {
-            throw new Error("User ID is required!");
+            throw new Error("User ID is required.");
         }
-        return this.SavedEventsRepository.findByUserId(userId);
+
+        return this.savedEventsRepository.findByUserId(userId);
     }
 
-    public async removeSavedEvents(userId: number, eventId: number): Promise<void> {
-        if (!userId || !eventId) {
-            throw new Error("User ID and event ID are required!");
+    public async removeSavedEvents(
+        userId: number,
+        eventExternalId: string
+    ): Promise<void> {
+        if (!userId || !eventExternalId) {
+            throw new Error("User ID and event ID are required.");
         }
 
-        const alreadyDeleted = await this.SavedEventsRepository.exists(userId, eventId);
+        const exists = await this.savedEventsRepository.exists(
+            userId,
+            eventExternalId
+        );
 
-        if (!alreadyDeleted) {
-            throw new Error("Event is already deleted!");
+        if (!exists) {
+            throw new Error("Event not found.");
         }
-        return this.SavedEventsRepository.delete(userId, eventId);
+
+        return this.savedEventsRepository.delete(userId, eventExternalId);
     }
-
 }
