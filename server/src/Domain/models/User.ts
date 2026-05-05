@@ -6,6 +6,17 @@ export class User {
 		public username: string = "",
 		public email: string = "",
 		public avatar_url: string | null=null,
-		public password_hash: string = ""
+		public password_hash: string = "",
+		public role: string = "user"
     ) { }
+}
+
+export type PublicUser = {
+	id: number,
+	name: string,
+	lastname: string,
+	username: string,
+	email: string,
+	avatar_url: string | null,
+	role: string
 }
