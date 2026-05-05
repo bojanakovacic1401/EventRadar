@@ -1,0 +1,15 @@
+export enum EventCategories {
+    MUSIC = "music",
+    THEATRE = "theatre",
+    FILM = "film",
+    ART = "art",
+    SPORT = "sport",
+    EDUCATION = "education",
+    NIGHTLIFE = "nightlife",
+    FOOD = "food",
+    FESTIVAL = "festival",
+    WORKSHOP = "workshop",
+    STANDUP = "standup",
+    FAMILY = "family",
+    OTHER = "other",
+}
