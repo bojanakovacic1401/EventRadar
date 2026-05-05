@@ -4,18 +4,6 @@ CREATE DATABASE IF NOT EXISTS beoLife
 
 USE beoLife;
 
-CREATE TABLE IF NOT EXISTS events (
-	id INT AUTO_INCREMENT PRIMARY KEY,
-	event_title VARCHAR(255) NOT NULL,
-	event_description TEXT,
-	event_category VARCHAR(100) NOT NULL,
-	event_date DATETIME NOT NULL,
-	event_location VARCHAR(255),
-	event_price DECIMAL(10, 2),
-	event_image_url VARCHAR(255) NULL,
-	event_link TEXT
-);
-
 CREATE TABLE IF NOT EXISTS users (
 	id INT AUTO_INCREMENT PRIMARY KEY,
 	name VARCHAR(40) NOT NULL,
@@ -32,11 +20,16 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS saved_events(
 	id INT AUTO_INCREMENT PRIMARY KEY,
 	user_id INT NOT NULL,
-	event_id INT NOT NULL,
+	event_external_id VARCHAR(255) NOT NULL,
+	event_title VARCHAR(255) NOT NULL,
+	event_category VARCHAR(100),
+	event_date DATETIME NULL,
+	event_location VARCHAR(255),
+	event_link TEXT,
+	event_image_url TEXT,
+	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
 	FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-	FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE,
-
-	UNIQUE(user_id, event_id)
+	UNIQUE(user_id, event_external_id)
 );
 
