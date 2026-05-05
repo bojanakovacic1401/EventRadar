@@ -56,32 +56,6 @@ BeoLife/
 
 ---
 
-## Environment Variables
-
-Create a `.env` file inside the `server` folder:
-
-```env
-PORT=3000
-CLIENT_URL=http://localhost:5173
-
-DB_HOST=localhost
-DB_USER=root
-DB_PASSWORD=your_password
-DB_NAME=beoLife
-
-JWT_SECRET=your_long_random_secret
-JWT_EXPIRES_IN=7d
-
-TICKETMASTER_API_KEY=your_ticketmaster_consumer_key
-TICKETMASTER_BASE_URL=https://app.ticketmaster.com/discovery/v2
-TICKETMASTER_DEFAULT_CITY=Belgrade
-TICKETMASTER_DEFAULT_COUNTRY_CODE=RS
-```
-
-`TICKETMASTER_API_KEY` is the Ticketmaster Consumer Key.
-
----
-
 ## Setup
 
 Install backend dependencies:
