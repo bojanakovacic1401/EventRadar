@@ -6,10 +6,10 @@ export default function RegisterPage() {
     const navigate = useNavigate();
     const { register } = useAuth();
 
-    const [name, setName] = useState("Ana");
-    const [lastname, setLastname] = useState("Anic");
-    const [username, setUsername] = useState(`ana${Date.now().toString().slice(-4)}`);
-    const [email, setEmail] = useState(`ana${Date.now().toString().slice(-4)}@test.com`);
+    const [name, setName] = useState("Name");
+    const [lastname, setLastname] = useState("Lastname");
+    const [username, setUsername] = useState(`username${Date.now().toString().slice(-4)}`);
+    const [email, setEmail] = useState(`username${Date.now().toString().slice(-4)}@test.com`);
     const [password, setPassword] = useState("123456");
     const [error, setError] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
