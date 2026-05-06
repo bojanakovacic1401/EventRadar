@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 
 export class HttpError extends Error{
     public constructor(
-        public statucCode: number,
+        public statusCode: number,
         message: string
     ) {
         super(message);
