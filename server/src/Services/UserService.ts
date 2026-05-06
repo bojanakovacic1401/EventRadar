@@ -1,61 +1,140 @@
-import { User } from "../Domain/models/User";
-import { UserRepository } from "../Database/repositories/UserRepository";
-import { CreateUserInput, IUserRepository } from "../Domain/repositories/IUserRepository";
+import bcrypt from "bcryptjs";
+import jwt, { SignOptions } from "jsonwebtoken";
+import { User, PublicUser } from "../Domain/models/User";
+import { IUserRepository } from "../Domain/repositories/IUserRepository";
+import { env } from "../config/env";
+import { HttpError } from "../middleware/errorMiddleware";
+
+export type RegisterInput = {
+    name: string;
+    lastname: string;
+    username: string;
+    email: string;
+    password: string;
+    avatar_url?: string | null;
+};
+
+export type LoginInput = {
+    email: string;
+    password: string;
+};
+
+export type AuthResponse = {
+    user: PublicUser;
+    token: string;
+};
 
 export class UserService {
-	public constructor(private UserRepository: IUserRepository) { }
+    public constructor(private userRepository: IUserRepository) { }
 
-	public async makeUser(user: CreateUserInput): Promise<User> {
-		if (!user.email || !user.username || !user.name || !user.lastname) {
-			throw new Error("Email, name, lastname and username are required!")
-		}
+    public async register(input: RegisterInput): Promise<AuthResponse> {
+        const name = input.name?.trim();
+        const lastname = input.lastname?.trim();
+        const username = input.username?.trim();
+        const email = input.email?.trim().toLowerCase();
+        const password = input.password;
 
-		const alreadyExsists = await this.UserRepository.exists(user.id);
-		if (alreadyExsists) {
-			throw new Error("This user already exists.");
-		}
+        if (!name || !lastname || !username || !email || !password) {
+            throw new HttpError(400, "Name, lastname, username, email and password are required.");
+        }
 
-		return this.UserRepository.create(user);
-	}
+        if (username.length < 3) {
+            throw new HttpError(400, "Username must have at least 3 characters.");
+        }
 
-	public async getUserById(id: number): Promise<User | null> {
-		if (!id) {
-			throw new Error("ID is required.");
-		}
-		const alreadyExsists = await this.UserRepository.exists(id);
-		if (!alreadyExsists) {
-			throw new Error("This user does not exists.");
-		}
+        if (password.length < 6) {
+            throw new HttpError(400, "Password must have at least 6 characters.");
+        }
 
-		return this.UserRepository.findById(id);
-	}
+        const alreadyExists = await this.userRepository.existsByEmailOrUsername(
+            email,
+            username
+        );
 
-	public async getUserByEmail(email: string): Promise<User | null> {
-		if (!email) {
-			throw new Error("Email is required.");
-		}
+        if (alreadyExists) {
+            throw new HttpError(409, "Email or username is already taken.");
+        }
 
-		return this.UserRepository.findByEmail(email);
-	}
+        const passwordHash = await bcrypt.hash(password, 10);
 
-	public async getUserByUsername(username: string): Promise<User | null> {
-		if (!username) {
-			throw new Error("Username is required.");
-		}
+        const user = await this.userRepository.create({
+            name,
+            lastname,
+            username,
+            email,
+            avatar_url: input.avatar_url || null,
+            password_hash: passwordHash,
+            role: "user",
+        });
 
-		return this.UserRepository.findByUsername(username);
-	}
+        return {
+            user: this.toPublicUser(user),
+            token: this.signToken(user),
+        };
+    }
 
-	public async removeUser(id: number): Promise<void> {
-		if (!id) {
-			throw new Error("ID is required!");
-		}
+    public async login(input: LoginInput): Promise<AuthResponse> {
+        const email = input.email?.trim().toLowerCase();
+        const password = input.password;
 
-		const alreadyExsists = await this.UserRepository.exists(id);
-		if (!alreadyExsists) {
-			throw new Error("This user is already deleted.");
-		}
+        if (!email || !password) {
+            throw new HttpError(400, "Email and password are required.");
+        }
 
-		return this.UserRepository.delete(id);
-	}
+        const user = await this.userRepository.findByEmail(email);
+
+        if (!user) {
+            throw new HttpError(401, "Invalid email or password.");
+        }
+
+        const passwordMatches = await bcrypt.compare(password, user.password_hash);
+
+        if (!passwordMatches) {
+            throw new HttpError(401, "Invalid email or password.");
+        }
+
+        return {
+            user: this.toPublicUser(user),
+            token: this.signToken(user),
+        };
+    }
+
+    public async getMe(userId: number): Promise<PublicUser> {
+        const user = await this.userRepository.findById(userId);
+
+        if (!user) {
+            throw new HttpError(404, "User not found.");
+        }
+
+        return this.toPublicUser(user);
+    }
+
+    private toPublicUser(user: User): PublicUser {
+        return {
+            id: user.id,
+            name: user.name,
+            lastname: user.lastname,
+            username: user.username,
+            email: user.email,
+            avatar_url: user.avatar_url,
+            role: user.role,
+        };
+    }
+
+    private signToken(user: User): string {
+        const options: SignOptions = {
+            expiresIn: env.JWT_EXPIRES_IN as SignOptions["expiresIn"],
+        };
+
+        return jwt.sign(
+            {
+                id: user.id,
+                email: user.email,
+                username: user.username,
+                role: user.role,
+            },
+            env.JWT_SECRET,
+            options
+        );
+    }
 }

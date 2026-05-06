@@ -1,7 +1,6 @@
 import { User } from "../models/User";
 
 export type CreateUserInput = {
-	id: number;
 	name: string;
 	lastname: string;
 	username: string;

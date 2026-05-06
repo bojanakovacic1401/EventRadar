@@ -1,8 +1,5 @@
 import { Pool } from "mysql2/promise";
-import {
-    CreateUserInput,
-    IUserRepository,
-} from "../../Domain/repositories/IUserRepository";
+import { CreateUserInput, IUserRepository,} from "../../Domain/repositories/IUserRepository";
 import { User } from "../../Domain/models/User";
 
 export class UserRepository implements IUserRepository {
