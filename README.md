@@ -4,6 +4,10 @@ EventRadar is a full-stack event discovery web application built for exploring r
 
 The project was developed as a portfolio application with focus on full-stack architecture, API integration, authentication, protected routes, database persistence and a clean user experience.
 
+## Live Preview
+
+[Open EventRadar](https://event-radar-sable.vercel.app/)
+
 ---
 
 ## Overview
