@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 
-import { env } from "./src/env";
+import { env } from "./src/config/env";
 import eventRoutes from "./src/WebAPI/routes/eventRoutes";
 import authRoutes from "./src/WebAPI/routes/authRoutes";
 import savedEventsRoutes from "./src/WebAPI/routes/savedEventsRoutes";

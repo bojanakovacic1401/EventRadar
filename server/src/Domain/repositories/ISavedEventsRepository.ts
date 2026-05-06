@@ -1,21 +1,25 @@
-import { SavedEvents } from "../models/SavedEvents"; //tacke su koliko foldera u nazad idem
+import { SavedEvents } from "../models/SavedEvents";
 
 export type CreateSavedEvent = {
     user_id: number;
     event_external_id: string;
     event_title: string;
-    event_category: string;
-    event_date: Date;
-    event_location: string;
-    event_link: string;
+    event_category?: string | null;
+    event_date?: string | null;
+    event_time?: string | null;
+    event_venue?: string | null;
+    event_city?: string | null;
+    event_country?: string | null;
+    event_image_url?: string | null;
+    event_link?: string | null;
+    event_price_min?: number | null;
+    event_price_max?: number | null;
+    event_currency?: string | null;
 };
 
 export interface ISavedEventsRepository {
-    create(event: CreateSavedEvent): Promise<SavedEvents>; //create cuva
-    //Vraća Promise<SavedEvent> jer radi sa bazom, a baza je asinhrona.
+    create(event: CreateSavedEvent): Promise<SavedEvents>;
     findByUserId(userId: number): Promise<SavedEvents[]>;
-    //[] jer vraca niz svih sacuvanih
-    delete(userId: number, eventExternalId: string): Promise<void>, //void jer je prazno na kraju
+    delete(userId: number, eventExternalId: string): Promise<void>;
     exists(userId: number, eventExternalId: string): Promise<boolean>;
-    //boolean true ili false, tj proverava jel korisnik vec sacuvao taj dogadjaj
 }

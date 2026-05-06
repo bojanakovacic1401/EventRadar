@@ -1,12 +1,14 @@
 import dotenv from "dotenv";
+
 dotenv.config();
 
 function required(name: string): string {
     const value = process.env[name];
 
     if (!value) {
-        throw new Error("Mssing required environment variable: ${name}");
+        throw new Error(`Missing required environment variable: ${name}`);
     }
+
     return value;
 }
 
@@ -30,4 +32,4 @@ export const env = {
         process.env.TICKETMASTER_DEFAULT_CITY || "Belgrade",
     TICKETMASTER_DEFAULT_COUNTRY_CODE:
         process.env.TICKETMASTER_DEFAULT_COUNTRY_CODE || "RS",
-}
+};

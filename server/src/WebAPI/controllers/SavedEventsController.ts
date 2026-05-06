@@ -1,44 +1,75 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { SavedEventsService } from "../../Services/SavedEventsService";
-import { CreateSavedEvent } from "../../Domain/repositories/ISavedEventsRepository";
+import { HttpError } from "../../middleware/errorMiddleware";
 
 export class SavedEventsController {
     public constructor(private savedEventsService: SavedEventsService) { }
 
-    public saveEvent = async (req: Request, res: Response): Promise<void> => {
+    public saveEvent = async (
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ): Promise<void> => {
         try {
-            const savedEvent = await this.savedEventsService.saveEvent(req.body);
+            if (!req.user) {
+                throw new HttpError(401, "You must be logged in.");
+            }
+
+            const savedEvent = await this.savedEventsService.saveEvent(
+                req.user.id,
+                req.body
+            );
 
             res.status(201).json(savedEvent);
-        } catch (error: any) {
-            res.status(400).json({ message: error.message });
+        } catch (error) {
+            next(error);
         }
     };
 
-    public getSavedEventsByUser = async (req: Request, res: Response): Promise<void> => {
+    public getMySavedEvents = async (
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ): Promise<void> => {
         try {
-            const userId = Number(req.params.userId);
+            if (!req.user) {
+                throw new HttpError(401, "You must be logged in.");
+            }
 
-            const savedEvents = await this.savedEventsService.getSavedEventsByUser(userId);
+            const savedEvents = await this.savedEventsService.getSavedEventsByUser(
+                req.user.id
+            );
 
-            res.json(savedEvents);
-        } catch (error: any) {
-            res.status(400).json({ message: error.message });
+            res.status(200).json(savedEvents);
+        } catch (error) {
+            next(error);
         }
     };
 
-    public removeSavedEvents = async (req: Request, res: Response): Promise<void> => {
+    public removeSavedEvent = async (
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ): Promise<void> => {
         try {
-            const userId = Number(req.params.userId);
-            const eventExternalId = Array.isArray(req.params.eventExternalId)
-                ? req.params.eventExternalId[0]
-                : req.params.eventExternalId;
+            if (!req.user) {
+                throw new HttpError(401, "You must be logged in.");
+            }
 
-            await this.savedEventsService.removeSavedEvents(userId, eventExternalId);
+            const eventExternalId = req.params.eventExternalId;
+
+            if (!eventExternalId || Array.isArray(eventExternalId)) {
+                throw new HttpError(400, "Invalid event external ID.");
+            }
+
+            await this.savedEventsService.removeSavedEvent(
+                req.user.id,
+                eventExternalId
+            );
 
             res.status(204).send();
-        } catch (error: any) {
-            res.status(400).json({ message: error.message });
+        } catch (error) {
+            next(error);
         }
     };
 }
