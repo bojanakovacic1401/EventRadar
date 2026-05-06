@@ -1,4 +1,4 @@
-USE beoLife;
+USE EventRadar;
 
 INSERT INTO events
 (event_title, event_description, event_category, event_date, event_location, event_price, event_image_url, event_link)

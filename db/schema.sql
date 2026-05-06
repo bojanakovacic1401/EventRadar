@@ -1,27 +1,30 @@
-CREATE DATABASE IF NOT EXISTS beoLife
-	CHARACTER SET utf8mb4
-	COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE IF NOT EXISTS EventRadar
+  CHARACTER SET utf8mb4
+  COLLATE utf8mb4_unicode_ci;
 
-USE beoLife;
+USE EventRadar;
 
-CREATE TABLE IF NOT EXISTS users (
-	id INT AUTO_INCREMENT PRIMARY KEY,
-	name VARCHAR(40) NOT NULL,
-	lastname VARCHAR(40) NOT NULL,
-	username VARCHAR(40) NOT NULL UNIQUE,
-	email VARCHAR(120) NOT NULL UNIQUE,
-	avatar_url VARCHAR(255) NULL,
-	password_hash VARCHAR(255) NOT NULL,
-	role VARCHAR(20) NOT NULL DEFAULT 'user',
-	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+DROP TABLE IF EXISTS saved_events;
+DROP TABLE IF EXISTS users;
 
-	CHECK (CHAR_LENGTH(TRIM(username)) BETWEEN 6 AND 40),
-	CHECK (CHAR_LENGTH(TRIM(email)) >0),
-	CHECK (role IN ('user', 'admin'))
+CREATE TABLE users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(40) NOT NULL,
+  lastname VARCHAR(40) NOT NULL,
+  username VARCHAR(40) NOT NULL UNIQUE,
+  email VARCHAR(120) NOT NULL UNIQUE,
+  avatar_url VARCHAR(255) NULL,
+  password_hash VARCHAR(255) NOT NULL,
+  role VARCHAR(20) NOT NULL DEFAULT 'user',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+  CHECK (CHAR_LENGTH(TRIM(username)) BETWEEN 3 AND 40),
+  CHECK (CHAR_LENGTH(TRIM(email)) > 0),
+  CHECK (role IN ('user', 'admin'))
 );
 
-CREATE TABLE IF NOT EXISTS saved_events(
-	  id INT AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE saved_events (
+  id INT AUTO_INCREMENT PRIMARY KEY,
   user_id INT NOT NULL,
 
   event_external_id VARCHAR(255) NOT NULL,
@@ -44,7 +47,5 @@ CREATE TABLE IF NOT EXISTS saved_events(
   UNIQUE(user_id, event_external_id)
 );
 
-
 CREATE INDEX idx_saved_events_user_id ON saved_events(user_id);
 CREATE INDEX idx_saved_events_external_id ON saved_events(event_external_id);
-

@@ -21,7 +21,7 @@ app.use(express.json());
 app.get("/api/health", (_req, res) => {
     res.json({
         status: "ok",
-        app: "BeoLife",
+        app: "EventRadar",
     });
 });
 

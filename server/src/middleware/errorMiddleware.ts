@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
-export class HttpError extends Error{
+export class HttpError extends Error {
     public constructor(
         public statusCode: number,
         message: string
@@ -10,7 +10,7 @@ export class HttpError extends Error{
 }
 
 export function notFoundHandler(req: Request, _res: Response, next: NextFunction) {
-    next(new HttpError(404, "Route not found: ${req.method} ${req.originalUrl}"));
+    next(new HttpError(404, `Route not found: ${req.method} ${req.originalUrl}`));
 }
 
 export function errorHandler(
@@ -19,6 +19,8 @@ export function errorHandler(
     res: Response,
     _next: NextFunction
 ) {
+    console.error(error);
+
     const statusCode = error instanceof HttpError ? error.statusCode : 500;
 
     res.status(statusCode).json({

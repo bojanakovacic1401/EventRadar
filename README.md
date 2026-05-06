@@ -1,6 +1,6 @@
-# BeoLife
+# EventRadar
 
-BeoLife is a web application for discovering events in a selected city using the Ticketmaster Discovery API.
+EventRadar is a web application for discovering events in a selected city using the Ticketmaster Discovery API.
 
 Guests can browse and filter events, while authenticated users can save events to their personal list. Future versions will include calendar export and Google Calendar integration.
 
@@ -35,7 +35,7 @@ Frontend planned with React, TypeScript, and Vite.
 ## Project Structure
 
 ```txt
-BeoLife/
+EventRadar/
 ├── db/
 │   └── schema.sql
 ├── server/
